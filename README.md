@@ -29,6 +29,7 @@ php artisan serve
 # Admin login password to access
   
 username => admin
+
 password => secretpass
 
 
