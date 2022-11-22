@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\ApiErrorException;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\PublisherRequest;
 use App\Http\Resources\PublisherResource;
 use App\Models\Publisher;
@@ -61,7 +59,7 @@ class PublisherController extends BaseController
     public function destroy(Publisher $publisher)
     {
         if ($publisher->books()->exists()) {
-            throw new ApiErrorException('This publisher has books');
+            return response()->json('This publisher has books', 400);
         }
         $publisher->delete();
 

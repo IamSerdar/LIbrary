@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\PublisherController;
 use App\Http\Controllers\Api\BookController;
@@ -17,6 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('authors', AuthorController::class)->except('show');
-Route::apiResource('publishers', PublisherController::class)->except('show');
-Route::apiResource('books', BookController::class)->except('show');
+Route::post('login', [AuthController::class, 'login'])->name('login');
+
+Route::middleware('auth:sanctum')->group(function() {
+    Route::apiResource('authors', AuthorController::class)->except('show');
+    Route::apiResource('publishers', PublisherController::class)->except('show');
+    Route::apiResource('books', BookController::class)->except('show');
+});

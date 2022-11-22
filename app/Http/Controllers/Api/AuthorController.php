@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\ApiErrorException;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthorRequest;
 use App\Http\Resources\AuthorResource;
 use App\Models\Author;
@@ -61,7 +59,7 @@ class AuthorController extends BaseController
     public function destroy(Author $author)
     {
         if ($author->books()->exists()) {
-            throw new ApiErrorException('This author has books');
+            return response()->json('This author has books', 400);
         }
         $author->delete();
 

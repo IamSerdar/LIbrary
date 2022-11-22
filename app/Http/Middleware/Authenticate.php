@@ -18,4 +18,13 @@ class Authenticate extends Middleware
             return route('login');
         }
     }
+
+    protected function authenticate($request, array $guards)
+    {
+        parent::authenticate($request, $guards);
+        $user = auth()->user();
+        if ($user && !$user->is_active) {
+            throw abort(403, 'Your account is not active');
+        }
+    }
 }
