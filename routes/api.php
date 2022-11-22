@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\PublisherController;
+use App\Http\Controllers\Api\BookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,3 +19,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('authors', AuthorController::class)->except('show');
 Route::apiResource('publishers', PublisherController::class)->except('show');
+Route::apiResource('books', BookController::class)->except('show');

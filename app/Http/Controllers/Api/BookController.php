@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ApiErrorException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AuthorRequest;
-use App\Http\Resources\AuthorResource;
-use App\Models\Author;
+use App\Http\Requests\BookRequest;
+use App\Http\Resources\BookResource;
+use App\Models\Book;
 use Illuminate\Http\Request;
 
-class AuthorController extends BaseController
+class BookController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +18,9 @@ class AuthorController extends BaseController
      */
     public function index()
     {
-        $authors = Author::all();
+        $books = Book::all();
         return $this->respondOK(
-            AuthorResource::collection($authors)
+            BookResource::collection($books)
         );
     }
 
@@ -30,11 +30,12 @@ class AuthorController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(AuthorRequest $request)
+    public function store(BookRequest $request)
     {
-        $author = Author::create($request->all());
+        $book = Book::create($request->all());
+        $book->authors()->attach($request->get('author_ids'));
         return $this->respondCreated(
-            AuthorResource::make($author)
+            BookResource::make($book)
         );
     }
 
@@ -45,11 +46,12 @@ class AuthorController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Author $author)
+    public function update(Request $request, Book $book)
     {
-        $author->update($request->all());
+        $book->update($request->all());
+        $book->authors()->sync($request->get('author_ids'));
 
-        return $this->respondUpdated(new AuthorResource($author));
+        return $this->respondUpdated(new BookResource($book));
     }
 
     /**
@@ -58,12 +60,10 @@ class AuthorController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Author $author)
+    public function destroy(Book $book)
     {
-        if ($author->books()->exists()) {
-            throw new ApiErrorException('This author has books');
-        }
-        $author->delete();
+        $book->authors()->detach();
+        $book->delete();
 
         return $this->respondDeleted();
     }
